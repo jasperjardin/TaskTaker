@@ -36,8 +36,6 @@ echo "<pre>";
     print_r($tasks->read(175));
 echo "</pre>";
 
-echo md5('admin123') . '<br> $P$BMZpPuebY1Jl9qIci.2bT.F513IjMp0<br>';
-
 // var_dump( $conn->readAll( 'SELECT * FROM tasks ORDER BY id DESC' ) );
 
 // How to use Class handler
