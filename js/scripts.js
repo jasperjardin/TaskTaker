@@ -2,9 +2,11 @@
 jQuery( function($) {
     "use strict";
 
+    var tasktaker_page_num = 1;
+
     var Task = Backbone.Model.extend({
         url: function (){
-            return this.id ? "tasks.php?id=" + this.id : "tasks.php";
+            return this.id ? "RestAPI/tasks.php?id=" + this.id + "?page=" + tasktaker_page_num : "RestAPI/tasks.php";
         },
         defaults: {
             id: this.id,
@@ -18,9 +20,27 @@ jQuery( function($) {
 
     var Tasks = Backbone.Collection.extend({
         model: Task,
-        url: 'tasks.php',
-        parse: function(data) {
+        url: 'RestAPI/tasks.php',
+        parse: function( data ) {
             return data.tasks;
+        },
+    });
+
+
+    var TaskPagination = Backbone.Model.extend({
+        url: function (){
+            return this.id ? "RestAPI/tasks.php?page=" + tasktaker_page_num : "RestAPI/tasks.php";
+        },
+        defaults: {
+            page: tasktaker_page_num,
+        }
+    });
+
+    var TasksPagination = Backbone.Collection.extend({
+        model: TaskPagination,
+        url: 'RestAPI/tasks.php',
+        parse: function( data ) {
+            return data.pagination;
         },
     });
 
@@ -48,7 +68,7 @@ jQuery( function($) {
         events: {
             'click .task-status-checkbox' : 'taskUpdateStatus',
             'click .open-task'            : 'openTask',
-            'click .edit-task'            : 'taskUpdateTitle',
+            'click .save-changes'         : 'taskUpdateTitle',
             'click .delete-task'          : 'taskDestroy',
         },
 
@@ -72,8 +92,7 @@ jQuery( function($) {
             e.preventDefault();
             var task_title = this.$el.find('.task-edit').text();
             this.model.set( 'title', task_title );
-            this.model.save();
-            // Backbone.sync( "update", this.model );
+            Backbone.sync( "update", this.model );
 
             // console.log(this.model);
             // console.log(this.model.attributes);
@@ -102,9 +121,6 @@ jQuery( function($) {
             this.collection.on( 'add remove', this.render, this );
             this.collection.on( 'remove', this.remove, this );
         },
-        remove: function(task){
-           Backbone.sync( "delete", task);
-        },
         tagName: 'ul',
         render:function () {
             $( "#tasks-list" ).children().detach();
@@ -121,10 +137,14 @@ jQuery( function($) {
     var tasksView = new TasksView( { collection: tasks } );
     var idle_time = 500; // 5 Seconds.
 
+    var tasks_pagination = new TasksPagination();
+
     $( '.item-list' ).append('<span class="loading"></span>');
 
     setTimeout(function(){
         tasks.fetch();
+        tasks_pagination.fetch();
+        console.log(tasks_pagination);
     }, idle_time);
 
     $( "#new-task-btn" ).on( 'click', function(e) {
@@ -182,11 +202,13 @@ jQuery( function($) {
         if ( edit_field.hasClass( 'update-task' ) ) {
             icon.text( 'create' );
             _this.attr( 'data-label', 'Edit' );
+            _this.removeClass( 'save-changes' );
             edit_field.removeClass( 'update-task' );
             edit_field.attr( 'contenteditable', 'false' );
         } else {
             icon.text( 'check' );
             _this.attr( 'data-label', 'Update' );
+            _this.addClass( 'save-changes' );
             edit_field.addClass( 'update-task' );
             edit_field.attr( 'contenteditable', 'true' );
             edit_field.focus();
@@ -212,6 +234,7 @@ jQuery( function($) {
             start: function(e, ui) {
                 // creates a temporary attribute on the element with the old index
             },
+            axis: 'y',
             stop: function(event, ui) {
                 $.each( $( "#tasks-list li" ), function( index, value ) {
                   $(this).attr('data-position', index);
