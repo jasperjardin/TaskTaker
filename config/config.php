@@ -35,4 +35,4 @@ define( 'TASKTAKER_DB_COLLATE', 'utf8mb4_unicode_ci' );
 /**
  * Allowed Task to display per page.
  */
-define( 'TASKS_PER_PAGE', 5 );
+define( 'TASKTAKER_TASKS_PER_PAGE', 8 );
