@@ -1,9 +1,10 @@
 .item-list {
 	.loading {
-		margin: 0 auto;
+		margin: 100px auto;
 		font-size: 10px;
 		position: relative;
 		display: block;
+        overflow: hidden;
 		text-indent: -9999em;
 		border: 5px solid rgba(0, 0, 0, 0.35);
 		border-left: 5px solid rgba(0, 0, 0, 0.68);
