@@ -16,7 +16,7 @@
     <script src="js/backbone.js"></script>
 
     <script src="js/backbone.localStorage.js"></script>
-    <script src="js/scripts.js"></script>
+    <script src="js/scripts.dev.js"></script>
 
     <!-- Templates -->
     <div class="container">
@@ -32,13 +32,13 @@
                 </div>
                 <div class="content-section tasks-creation-section">
                      <div class="task-title-field-section">
-                        <input id="new-task-item" class="text-ui" type="text" placeholder="What are the task for today?">
+                        <input id="new-task-item" name="task-title" class="text-ui" type="text" placeholder="What are the task for today?">
                         <a href="#" id="new-task-btn" class="task-action new-task task-tooltip btn-ui" data-label="Create">
                             <i class="material-icons task-icon task-icon task-icon-create">send</i>
                         </a>
                         <div class="notification-ui"></div>
                      </div>
-                    <textarea id="new-task-description" class="textarea-ui" placeholder="Describe the task..."></textarea>
+                    <textarea id="new-task-description" name="task-description" class="textarea-ui" placeholder="Describe the task..."></textarea>
                 </div>
             </div>
             <div id="tasks-container-right" class="col-md-6">
@@ -50,6 +50,9 @@
                     </div>
                     <div class="content-section tasks-list-section">
                         <ul id="tasks-list" class="item-list"></ul>
+                    </div>
+                    <div class="pagination-section">
+                        <ul id="tasks-pagination" class="pagination-ui"></ul>
                     </div>
                 </div>
             </div>
@@ -88,6 +91,11 @@
         <p class="single-task-description" task-id="<%= id %>"><%= description %></p>
     </script>
 
+    <script type="text/template" id="pagination-template">
+        <a href="#" class="pagination-link" title="<%= title %>" data-page="<%= page %>">
+            <%= label %>
+        </a>
+    </script>
 
 </body>
 
